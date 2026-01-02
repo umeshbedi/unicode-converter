@@ -2,11 +2,19 @@ const $ = (id) => document.getElementById(id);
 
 let mappings = {};
 let currentLang = 'default';
+let editingKey = null; // if set, indicates a key being edited/renamed
+
+function matchesFilter(key, value, term) {
+  if (!term) return true;
+  const t = term.toLowerCase();
+  return (key && key.toLowerCase().includes(t)) || (value && value.toLowerCase().includes(t));
+}
 
 function renderMappingsList() {
   const container = $('mappingsList');
   container.innerHTML = '';
-  const keys = Object.keys(mappings).sort((a,b)=>b.length - a.length);
+  const searchTerm = $('searchInput') ? $('searchInput').value.trim() : '';
+  const keys = Object.keys(mappings).sort((a,b)=>b.length - a.length).filter(k=>matchesFilter(k, mappings[k], searchTerm));
   if (keys.length === 0) {
     container.textContent = '(no mappings yet)';
     return;
@@ -17,12 +25,22 @@ function renderMappingsList() {
     const td1 = document.createElement('td'); td1.textContent = k;
     const td2 = document.createElement('td'); td2.textContent = mappings[k];
     const td3 = document.createElement('td');
+    const edit = document.createElement('button'); edit.textContent = 'Edit';
+    edit.onclick = ()=>{
+      // populate inputs for editing
+      $('fromInput').value = k;
+      $('toInput').value = mappings[k] || '';
+      editingKey = k;
+      // enable Update button
+      const upd = $('updateMappingBtn'); if (upd) upd.disabled = false;
+    };
     const del = document.createElement('button'); del.textContent = 'Delete';
     del.onclick = async ()=>{
       delete mappings[k];
       await window.api.saveMappings(currentLang, mappings);
       renderMappingsList();
     };
+    td3.appendChild(edit);
     td3.appendChild(del);
     tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
     table.appendChild(tr);
@@ -54,6 +72,8 @@ async function loadMappings(lang) {
   mappings = await window.api.loadMappings(lang);
   currentLang = lang;
   $('langLabel').textContent = lang;
+  editingKey = null;
+  const upd = $('updateMappingBtn'); if (upd) upd.disabled = true;
   renderMappingsList();
 }
 
@@ -81,8 +101,34 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     mappings[from] = to;
     await window.api.saveMappings(currentLang, mappings);
     $('fromInput').value=''; $('toInput').value='';
+    editingKey = null;
+    const upd = $('updateMappingBtn'); if (upd) upd.disabled = true;
     renderMappingsList();
   };
+
+  // Update mapping (rename or change value)
+  const updateBtn = $('updateMappingBtn');
+  if (updateBtn) {
+    updateBtn.onclick = async ()=>{
+      if (!editingKey) return alert('No mapping selected to update');
+      const from = $('fromInput').value;
+      const to = $('toInput').value;
+      if (!from) return alert('from is required');
+      // if key changed, remove old
+      if (from !== editingKey) delete mappings[editingKey];
+      mappings[from] = to;
+      await window.api.saveMappings(currentLang, mappings);
+      editingKey = null;
+      $('fromInput').value=''; $('toInput').value='';
+      updateBtn.disabled = true;
+      renderMappingsList();
+    };
+  }
+
+  $('searchInput').addEventListener('input', ()=>{
+    renderMappingsList();
+  });
+  $('clearSearchBtn').onclick = ()=>{ const s = $('searchInput'); if (s) { s.value=''; renderMappingsList(); } };
 
   $('uploadBtn').onclick = async ()=>{
     const fileInput = $('fileInput');
