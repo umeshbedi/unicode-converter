@@ -166,6 +166,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('clearSearchBtn').onclick = ()=>{ const s = $('searchInput'); if (s) { s.value=''; renderMappingsList(); } };
 
   $('uploadBtn').onclick = async ()=>{
+    const ok = confirm(`It will replace all mappings for "${currentLang}". This cannot be undone.`);
+    if (!ok) return;
     const fileInput = $('fileInput');
     if (!fileInput.files || fileInput.files.length===0) return alert('Select a JSON file');
     const file = fileInput.files[0];
