@@ -1,0 +1,12 @@
+{
+  "name": "unicode-converter",
+  "version": "0.1.0",
+  "description": "Simple Electron desktop app to map characters to unicode and vice versa",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^26.0.0"
+  }
+}

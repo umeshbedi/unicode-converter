@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unicode Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Unicode Converter</h1>
+
+    <div class="controls">
+      <label>Language:
+        <select id="languageSelect"></select>
+      </label>
+      <button id="manageBtn">Manage Languages</button>
+      <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" />
+      <button id="createLangBtn">Create language</button>
+
+      <label>Direction:
+        <select id="directionSelect">
+          <option value="toUnicode">To Unicode</option>
+          <option value="fromUnicode">From Unicode</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="io">
+      <textarea id="inputText" placeholder="Type text to convert"></textarea>
+      <textarea id="outputText" placeholder="Converted output" readonly></textarea>
+    </div>
+
+    <div class="actions">
+      <button id="convertBtn">Convert</button>
+      <button id="refreshBtn">Reload mappings</button>
+    </div>
+
+    <hr />
+
+    <h2>Mappings</h2>
+    <div class="add">
+      <input id="fromInput" placeholder="from char(s)" />
+      <input id="toInput" placeholder="to char(s)" />
+      <button id="addMappingBtn">Add mapping</button>
+    </div>
+
+    <div id="mappingsList"></div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

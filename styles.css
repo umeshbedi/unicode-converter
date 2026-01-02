@@ -1,0 +1,11 @@
+body{ font-family: Arial, Helvetica, sans-serif; background: #f7f9fb; color:#222; }
+.container{ max-width:900px; margin: 20px auto; background:#fff; padding:20px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+h1{ margin-top:0 }
+.controls{ display:flex; gap:8px; align-items:center; margin-bottom:12px }
+.io{ display:flex; gap:8px; }
+textarea{ width:100%; height:150px; padding:8px; font-size:14px }
+.actions{ margin-top:8px }
+.add{ display:flex; gap:8px; margin-bottom:8px }
+#mappingsList table{ width:100%; border-collapse:collapse }
+#mappingsList td{ padding:6px; border-bottom:1px solid #eee }
+button{ padding:6px 10px }
