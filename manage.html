@@ -5,43 +5,55 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Languages</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div class="container">
-    <h1>Manage Languages</h1>
-    <div class="controls">
-      <label>Language:
-        <select id="languageSelect"></select>
-      </label>
-      <button id="backBtn">Back</button>
-      <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" />
-      <button id="createLangBtn">Create language</button>
-      <button id="deleteLangBtn">Delete language</button>
+<body class="bg-slate-50 text-slate-800">
+  <div class="max-w-4xl mx-auto mt-10">
+    <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+      <div class="px-8 py-6 border-b">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-semibold">Manage Languages</h1>
+          <div class="flex items-center gap-3">
+            <label class="text-sm text-slate-600">Language
+              <select id="languageSelect" class="ml-2 border rounded px-2 py-1 text-sm"></select>
+            </label>
+            <button id="backBtn" class="text-sm bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-8 py-6">
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <div class="flex items-center gap-2">
+            <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" class="border rounded px-3 py-1" />
+            <button id="createLangBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">Create</button>
+            <button id="deleteLangBtn" class="bg-rose-500 hover:bg-rose-600 text-white px-3 py-1 rounded">Delete</button>
+          </div>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <input id="fileInput" type="file" accept="application/json" class="hidden" />
+            <button id="uploadBtn" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded">Upload JSON</button>
+            <button id="exportBtn" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded">Export JSON</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mb-4">
+          <input id="searchInput" placeholder="Search mappings (key or value)" class="border rounded px-3 py-2 w-full" />
+          <button id="clearSearchBtn" class="bg-slate-200 hover:bg-slate-300 px-3 py-2 rounded">Clear</button>
+        </div>
+
+        <h2 class="text-lg font-medium mb-3">Mappings for <span id="langLabel" class="font-semibold"></span></h2>
+        <div class="flex gap-2 mb-4">
+          <input id="fromInput" placeholder="from char(s)" class="border rounded px-3 py-2 w-1/2" />
+          <input id="toInput" placeholder="to char(s)" class="border rounded px-3 py-2 w-1/2" />
+          <button id="addMappingBtn" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-2 rounded">Add</button>
+          <button id="updateMappingBtn" disabled class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded">Update</button>
+        </div>
+
+        <div id="mappingsList" class="overflow-auto max-h-[360px]"></div>
+      </div>
     </div>
-
-    <div class="upload">
-      <input id="fileInput" type="file" accept="application/json" />
-      <button id="uploadBtn">Upload JSON</button>
-      <button id="exportBtn">Export JSON</button>
-    </div>
-
-    <div class="search">
-      <input id="searchInput" placeholder="Search mappings (key or value)" />
-      <button id="clearSearchBtn">Clear</button>
-    </div>
-
-    <hr />
-
-    <h2>Mappings for <span id="langLabel"></span></h2>
-    <div class="add">
-      <input id="fromInput" placeholder="from char(s)" />
-      <input id="toInput" placeholder="to char(s)" />
-      <button id="addMappingBtn">Add mapping</button>
-      <button id="updateMappingBtn" disabled>Update mapping</button>
-    </div>
-
-    <div id="mappingsList"></div>
   </div>
 
   <script src="manage.js"></script>

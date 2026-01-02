@@ -20,12 +20,16 @@ function renderMappingsList() {
     return;
   }
   const table = document.createElement('table');
+  table.className = 'min-w-full divide-y divide-slate-100';
   keys.forEach(k=>{
     const tr = document.createElement('tr');
     const td1 = document.createElement('td'); td1.textContent = k;
+    td1.className = 'px-4 py-3 text-sm font-medium text-slate-800';
     const td2 = document.createElement('td'); td2.textContent = mappings[k];
-    const td3 = document.createElement('td');
+    td2.className = 'px-4 py-3 text-sm text-slate-600';
+    const td3 = document.createElement('td'); td3.className = 'px-4 py-3 text-right space-x-2';
     const edit = document.createElement('button'); edit.textContent = 'Edit';
+    edit.className = 'bg-indigo-500 hover:bg-indigo-600 text-white px-2 py-1 rounded text-sm';
     edit.onclick = ()=>{
       // populate inputs for editing
       $('fromInput').value = k;
@@ -35,6 +39,7 @@ function renderMappingsList() {
       const upd = $('updateMappingBtn'); if (upd) upd.disabled = false;
     };
     const del = document.createElement('button'); del.textContent = 'Delete';
+    del.className = 'bg-rose-500 hover:bg-rose-600 text-white px-2 py-1 rounded text-sm';
     del.onclick = async ()=>{
       delete mappings[k];
       await window.api.saveMappings(currentLang, mappings);
