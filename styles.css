@@ -21,12 +21,13 @@ body {
 
 /* Main container */
 .container {
-  max-width: 900px;
+  max-width: 90%;
   margin: 40px auto;
   background: white;
   padding: 24px 28px 32px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  height: 90vh;
 }
 
 h1 {
@@ -63,7 +64,8 @@ textarea {
 
 textarea {
   resize: vertical;
-  min-height: 220px;
+  min-height: 420px;
+  max-height: 420px;
 }
 
 /* Input / Output boxes */
@@ -147,4 +149,10 @@ hr {
   border: none;
   border-top: 1px solid #e2e8f0;
   margin: 24px 0;
+}
+
+
+#outputText {
+  font-family: "Shree-Dev-0714", ShreeDev0714, "Shree Dev 0714", sans-serif;
+  font-size: 20px;
 }
