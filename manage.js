@@ -3,6 +3,22 @@ const $ = (id) => document.getElementById(id);
 let mappings = {};
 let currentLang = 'default';
 let editingKey = null; // if set, indicates a key being edited/renamed
+// Session persistence for manage page
+const SESSION_KEY = 'uc:session';
+function saveSessionManage(){
+  try{
+    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+    sess.manage = sess.manage || {};
+    sess.manage.currentLang = currentLang;
+    const s = $('searchInput'); const f = $('fromInput'); const t = $('toInput');
+    if (s) sess.manage.search = s.value;
+    if (f) sess.manage.from = f.value;
+    if (t) sess.manage.to = t.value;
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sess));
+  }catch(e){console.warn('saveSessionManage failed', e)}
+}
+
+function loadSessionManage(){ try{ const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}'); return sess.manage || {}; }catch(e){return{}} }
 
 function matchesFilter(key, value, term) {
   if (!term) return true;
@@ -62,7 +78,9 @@ async function refreshLanguages() {
     sel.appendChild(opt);
   });
   if (langs.length>0) {
-    currentLang = langs[0];
+    // restore previous selection if present
+    const sess = loadSessionManage();
+    currentLang = sess.currentLang && langs.includes(sess.currentLang) ? sess.currentLang : langs[0];
     sel.value = currentLang;
     await loadMappings(currentLang);
   } else {
@@ -80,6 +98,14 @@ async function loadMappings(lang) {
   editingKey = null;
   const upd = $('updateMappingBtn'); if (upd) upd.disabled = true;
   renderMappingsList();
+  // restore manage inputs from session
+  try{
+    const sess = loadSessionManage();
+    const sEl = $('searchInput'); const fEl = $('fromInput'); const tEl = $('toInput');
+    if (sess.search && sEl) sEl.value = sess.search;
+    if (sess.from && fEl) fEl.value = sess.from;
+    if (sess.to && tEl) tEl.value = sess.to;
+  }catch(e){}
 }
 
 window.addEventListener('DOMContentLoaded', async ()=>{
@@ -93,10 +119,12 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     await window.api.saveMappings(newLang, {});
     $('newLanguageInput').value='';
     await refreshLanguages();
+    saveSessionManage();
   };
 
   $('languageSelect').onchange = async (e)=>{
     await loadMappings(e.target.value);
+    saveSessionManage();
   };
 
   $('addMappingBtn').onclick = async ()=>{
@@ -109,6 +137,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     editingKey = null;
     const upd = $('updateMappingBtn'); if (upd) upd.disabled = true;
     renderMappingsList();
+    saveSessionManage();
   };
 
   // Update mapping (rename or change value)
@@ -132,6 +161,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
 
   $('searchInput').addEventListener('input', ()=>{
     renderMappingsList();
+    saveSessionManage();
   });
   $('clearSearchBtn').onclick = ()=>{ const s = $('searchInput'); if (s) { s.value=''; renderMappingsList(); } };
 
@@ -145,6 +175,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     await window.api.saveMappings(currentLang, parsed);
     await loadMappings(currentLang);
     fileInput.value = '';
+    saveSessionManage();
   };
 
   $('exportBtn').onclick = async ()=>{
@@ -166,4 +197,8 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     if (!res) return alert('Delete failed');
     await refreshLanguages();
   };
+
+  window.addEventListener('beforeunload', ()=>{
+    saveSessionManage();
+  });
 });

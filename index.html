@@ -13,28 +13,34 @@
   <div class="container">
     <h1>Unicode Converter</h1>
 
-    <div class="controls">
-      <label>Language:
-        <select id="languageSelect"></select>
-      </label>
-      
-      <div style="display: none;">
-        <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" />
-        <button id="createLangBtn">Create language</button>
-      </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div class="controls">
+        <label>Language:
+          <select id="languageSelect"></select>
+        </label>
 
-      <label>Direction:
-        <select id="directionSelect">
-          <option value="toUnicode">To Unicode</option>
-          <option value="fromUnicode">From Unicode</option>
-        </select>
-      </label>
-      <button id="manageBtn">Manage Languages</button>
+        <div style="display: none;">
+          <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" />
+          <button id="createLangBtn">Create language</button>
+        </div>
+
+        <label>Direction:
+          <select id="directionSelect">
+            <option value="toUnicode">To Unicode</option>
+            <option value="fromUnicode">From Unicode</option>
+          </select>
+        </label>
+
+      </div>
+      <button id="manageBtn">Manage</button>
     </div>
 
     <div class="io">
       <textarea id="inputText" placeholder="Type text to convert"></textarea>
-      <textarea id="outputText" placeholder="Converted output" readonly></textarea>
+      <div class="output-wrapper">
+        <button id="copyBtn" title="Copy">📋</button>
+        <textarea id="outputText" placeholder="Converted output" readonly></textarea>
+      </div>
     </div>
 
     <div class="actions">

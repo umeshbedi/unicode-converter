@@ -21,6 +21,7 @@ body {
 
 /* Main container */
 .container {
+  position: relative;
   max-width: 90%;
   margin: 40px auto;
   background: white;
@@ -60,12 +61,11 @@ textarea {
   border-radius: 6px;
   padding: 8px 10px;
   font-size: 14px;
+  width: 100%;
 }
 
 textarea {
-  resize: vertical;
-  min-height: 420px;
-  max-height: 420px;
+  height: 100%;
 }
 
 /* Input / Output boxes */
@@ -73,6 +73,8 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  /* background-color: yellow; */
+  height: calc(100% - 160px);
 }
 
 /* Buttons */
@@ -156,3 +158,30 @@ hr {
   font-family: "Shree-Dev-0714", ShreeDev0714, "Shree Dev 0714", sans-serif;
   font-size: 20px;
 }
+
+
+.output-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+#copyBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+#copyBtn:hover {
+  opacity: 1;
+  background: #4338ca;
+}
+

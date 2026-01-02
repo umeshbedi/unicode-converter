@@ -5,6 +5,30 @@ const $ = (id) => document.getElementById(id);
 let mappings = {};
 let currentLang = 'default';
 
+// Session persistence (localStorage)
+const SESSION_KEY = 'uc:session';
+function saveSessionIndex() {
+  try {
+    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+    sess.index = sess.index || {};
+    const inputEl = $('inputText');
+    const outputEl = $('outputText');
+    const dirEl = $('directionSelect');
+    sess.index.currentLang = currentLang;
+    if (inputEl) sess.index.input = inputEl.value;
+    if (outputEl) sess.index.output = outputEl.value;
+    if (dirEl) sess.index.direction = dirEl.value;
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sess));
+  } catch (e) { console.warn('saveSessionIndex failed', e); }
+}
+
+function loadSessionIndex() {
+  try {
+    const sess = JSON.parse(localStorage.getItem(SESSION_KEY) || '{}');
+    return sess.index || {};
+  } catch (e) { return {}; }
+}
+
 async function listLanguages() {
   const langs = await window.api.listLanguages();
   return langs;
@@ -82,8 +106,21 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     await window.api.saveMappings('default', {});
   }
   const updatedLangs = await listLanguages();
+  // restore session if available
+  const sess = loadSessionIndex();
+  if (sess && sess.currentLang && updatedLangs.includes(sess.currentLang)) {
+    currentLang = sess.currentLang;
+  }
   renderLanguageOptions(updatedLangs);
-  if (updatedLangs.length>0) await loadMappings(updatedLangs[0]);
+  if (updatedLangs.length>0) await loadMappings(currentLang || updatedLangs[0]);
+
+  // restore input/output/direction
+  try {
+    const inputEl = $('inputText'); const outputEl = $('outputText'); const dirEl = $('directionSelect');
+    if (sess.input && inputEl) inputEl.value = sess.input;
+    if (sess.output && outputEl) outputEl.value = sess.output;
+    if (sess.direction && dirEl) dirEl.value = sess.direction;
+  } catch(e){}
 
   $('createLangBtn').onclick = async ()=>{
     const newLang = $('newLanguageInput').value.trim();
@@ -105,6 +142,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
   $('languageSelect').onchange = async (e)=>{
     const lang = e.target.value;
     await loadMappings(lang);
+    saveSessionIndex();
   };
 
   $('addMappingBtn').onclick = async ()=>{
@@ -117,15 +155,43 @@ window.addEventListener('DOMContentLoaded', async ()=>{
     renderMappingsList();
   };
 
-  $('convertBtn').onclick = ()=>{
-    const input = $('inputText').value;
-    const dir = $('directionSelect').value;
-    const out = convertText(input, dir);
-    $('outputText').value = out;
-  };
+  // save input live (debounced)
+  const inputEl = $('inputText');
+  if (inputEl) {
+    let inputTimer = null;
+    inputEl.addEventListener('input', ()=>{
+      clearTimeout(inputTimer);
+      inputTimer = setTimeout(()=> saveSessionIndex(), 400);
+    });
+  }
+
+  const convertBtnEl = $('convertBtn');
+  if (convertBtnEl) {
+    convertBtnEl.addEventListener('click', ()=>{
+      const input = $('inputText').value;
+      const dir = $('directionSelect').value;
+      const out = convertText(input, dir);
+      $('outputText').value = out;
+      saveSessionIndex();
+    });
+  }
+
+  window.addEventListener('beforeunload', ()=>{
+    saveSessionIndex();
+  });
 
   $('refreshBtn').onclick = async ()=>{
     await loadMappings(currentLang);
   };
 
+});
+
+// Copy output to clipboard
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const output = document.getElementById("outputText");
+
+  output.select();
+  output.setSelectionRange(0, 999999); // Windows fix
+
+  navigator.clipboard.writeText(output.value);
 });
