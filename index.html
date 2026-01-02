@@ -1,56 +1,62 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Unicode Converter</title>
-  <!-- Tailwind via Play CDN for quick styling (no build step) -->
-  <script src="cdn.tailwindcss.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-slate-50 text-slate-800">
-  <div class="max-w-4xl mx-auto mt-10">
-    <div class="bg-white shadow-lg rounded-xl overflow-hidden">
-      <div class="px-8 py-6 border-b">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-semibold">Unicode Converter</h1>
-          <div class="flex items-center gap-3">
-            <label class="text-sm text-slate-600">Language
-              <select id="languageSelect" class="ml-2 border rounded px-2 py-1 text-sm"></select>
-            </label>
-            <button class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded" onclick="window.location='manage.html'">Manage</button>
-          </div>
-        </div>
+
+<body>
+  <div class="container">
+    <h1>Unicode Converter</h1>
+
+    <div class="controls">
+      <label>Language:
+        <select id="languageSelect"></select>
+      </label>
+      
+      <div style="display: none;">
+        <input id="newLanguageInput" placeholder="new language id (e.g. hindi)" />
+        <button id="createLangBtn">Create language</button>
       </div>
 
-      <div class="px-8 py-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm text-slate-600 mb-2">Input</label>
-            <textarea id="inputText" placeholder="Type text to convert" class="w-full min-h-[220px] p-3 rounded border focus:outline-none focus:ring-2 focus:ring-indigo-200"></textarea>
-          </div>
-          <div>
-            <label class="block text-sm text-slate-600 mb-2">Output</label>
-            <textarea id="outputText" placeholder="Converted output" readonly class="w-full min-h-[220px] p-3 rounded border bg-slate-50"></textarea>
-          </div>
-        </div>
+      <label>Direction:
+        <select id="directionSelect">
+          <option value="toUnicode">To Unicode</option>
+          <option value="fromUnicode">From Unicode</option>
+        </select>
+      </label>
+      <button id="manageBtn">Manage Languages</button>
+    </div>
 
-        <div class="mt-4 flex items-center gap-3">
-          <label class="text-sm text-slate-600">Direction
-            <select id="directionSelect" class="ml-2 border rounded px-2 py-1 text-sm">
-              <option value="toUnicode">To Unicode</option>
-              <option value="fromUnicode">From Unicode</option>
-            </select>
-          </label>
+    <div class="io">
+      <textarea id="inputText" placeholder="Type text to convert"></textarea>
+      <textarea id="outputText" placeholder="Converted output" readonly></textarea>
+    </div>
 
-          <button id="convertBtn" class="ml-auto bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded">Convert</button>
-          <button id="refreshBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-2 rounded">Reload mappings</button>
-        </div>
+    <div class="actions">
+      <button id="convertBtn">Convert</button>
+      <!-- <button id="refreshBtn">Reload mappings</button> -->
+    </div>
+
+    <!-- <hr /> -->
+
+    <div style="display: none;">
+      <h2>Mappings</h2>
+      <div class="add">
+        <input id="fromInput" placeholder="from char(s)" />
+        <input id="toInput" placeholder="to char(s)" />
+        <button id="addMappingBtn">Add mapping</button>
       </div>
+
+      <div id="mappingsList"></div>
     </div>
   </div>
 
   <script src="renderer.js"></script>
 </body>
+
 </html>
